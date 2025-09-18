@@ -1,0 +1,9 @@
+{
+    "reserva_id_001": {
+        "usuario": "cliente123",
+        "auto": "auto_id_001",
+        "fecha_inicio": "2025-09-20",
+        "fecha_fin": "2025-09-25",
+        "estado": "activa"
+    }
+}

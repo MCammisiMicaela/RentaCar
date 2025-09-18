@@ -1,0 +1,20 @@
+{
+    "auto_id_001": {
+        "marca": "Toyota",
+        "modelo": "Corolla",
+        "categoria": "Mediano",
+        "caracteristica": "Automático",
+        "pasajeros": 5,
+        "color": "Gris oscuro",
+        "patente": "ABC123",
+        "precio_por_dia": 12000,
+        "foto": "recursos/iconos/corolla_gris_oscuro.png",
+        "bloqueado": false,
+        "disponibilidad": [
+            {
+            "desde": "2025-09-20",
+            "hasta": "2025-09-25"
+            }
+        ]
+    }
+}

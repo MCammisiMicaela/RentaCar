@@ -1,0 +1,10 @@
+{
+    "calificacion_id_001": {
+        "reserva": "reserva_id_001",
+        "auto": "auto_id_001",
+        "usuario": "cliente123",
+        "puntuacion": "Excelente",
+        "fecha": "2025-09-26"
+    }
+}
+

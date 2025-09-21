@@ -3,6 +3,7 @@ from PIL import Image, ImageTk
 from recursos.estilos import *
 from interfaces.comunes.registro_usuario import mostrar_registro_usuario
 from interfaces.administrador.gestion_administradores import mostrar_gestion_administradores
+from interfaces.administrador.gestionar_clientes import mostrar_gestion_clientes
 
 def mostrar_menu_admin(usuario_actual, ventana):
     for widget in ventana.winfo_children():
@@ -33,7 +34,7 @@ def mostrar_menu_admin(usuario_actual, ventana):
     
     # Botones de gestión
     botones_izquierda = [
-        ("Clientes", lambda: print("Ir a Clientes")),
+        ("Clientes", lambda: mostrar_gestion_clientes(usuario_actual, ventana)),
         ("Historial de reservas", lambda: print("Ir a Historial")),
         ("Gestión de autos", lambda: print("Ir a Gestión de autos")),
         ("Agregar auto", lambda: print("Ir a Agregar auto"))

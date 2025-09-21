@@ -27,7 +27,7 @@
         "usuario": "CamiCombin",
         "contrase\u00f1a": "cami123",
         "tipo": "cliente",
-        "bloqueado": false
+        "bloqueado": true
     },
     "admin1": {
         "nombre": "Malena",
@@ -39,16 +39,6 @@
         "tipo": "admin",
         "bloqueado": false
     },
-    "admin2": {
-        "nombre": "Lionel",
-        "apellido": "Kemerer",
-        "fecha_nacimiento": "20/09/2002",
-        "celular": "3496280478",
-        "usuario": "admin2",
-        "contrase\u00f1a": "admin2",
-        "tipo": "admin",
-        "bloqueado": false
-    },
     "mica": {
         "nombre": "Micaela",
         "apellido": "Cammisi",
@@ -57,7 +47,7 @@
         "usuario": "mica",
         "contrase\u00f1a": "mica123",
         "tipo": "cliente",
-        "bloqueado": false
+        "bloqueado": true
     },
     "male": {
         "nombre": "Malena",
@@ -67,6 +57,16 @@
         "usuario": "male",
         "contrase\u00f1a": "male123",
         "tipo": "cliente",
+        "bloqueado": false
+    },
+    "admin2": {
+        "nombre": "Lionel",
+        "apellido": "Kemerer",
+        "fecha_nacimiento": "21/09/2000",
+        "celular": "3496529060",
+        "usuario": "admin2",
+        "contrase\u00f1a": "admin2123",
+        "tipo": "admin",
         "bloqueado": false
     }
 }

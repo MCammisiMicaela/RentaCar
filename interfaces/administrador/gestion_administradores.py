@@ -31,17 +31,25 @@ def mostrar_gestion_administradores(ventana):
 
     columnas = ("usuario", "nombre", "apellido", "celular", "fecha_nacimiento")
     tabla = ttk.Treeview(ventana, columns=columnas, show="headings", height=10)
-    tabla.place(x=50, y=200)
+    tabla.place(x=50, y=280)
 
     for col in columnas:
         tabla.heading(col, text=col.capitalize())
         tabla.column(col, width=120)
 
-    mensaje_label = tk.Label(ventana, text="", **CONFIG_MENSAJE)
-    mensaje_label.place(x=50, y=440)
+    mensaje_busqueda = tk.Label(ventana, text="", **CONFIG_MENSAJE)
+    mensaje_busqueda.place(x=50, y=230)
+
+    mensaje_accion = tk.Label(ventana, text="", **CONFIG_MENSAJE)
+    mensaje_accion.place(x=50, y=520)
 
     info_label = tk.Label(ventana, text="", justify="left", **CONFIG_MENSAJE)
     info_label.place(x=600, y=200)
+
+    # Campo de búsqueda
+    tk.Label(ventana, text="Buscar administrador:", **CONFIG_LABEL_FORMULARIO).place(x=50, y=200)
+    entrada_busqueda = tk.Entry(ventana, width=30, font=TIPO_LETRA)
+    entrada_busqueda.place(x=200, y=200)
 
     def cargar_lista_administradores():
         tabla.delete(*tabla.get_children())
@@ -63,16 +71,45 @@ def mostrar_gestion_administradores(ventana):
                 tabla.insert("", tk.END, values=fila)
 
         info_label.config(text="")  # limpiar info al recargar
+        mensaje_busqueda.config(text="")
+        mensaje_accion.config(text="")
+    
+    def buscar_admin():
+        usuario_buscado = entrada_busqueda.get().strip()
+        if not usuario_buscado:
+            mensaje_busqueda.config(text="Ingresá un nombre de usuario para buscar.", fg=COLOR_ERROR)
+            return
+
+        tabla.delete(*tabla.get_children())
+        try:
+            with open(RUTA_USUARIOS, "r", encoding="utf-8") as archivo:
+                usuarios = json.load(archivo)
+        except:
+            usuarios = {}
+        
+        datos = usuarios.get(usuario_buscado)
+        if datos and datos.get("tipo") == "admin":
+            fila = (
+                usuario_buscado,
+                datos.get("nombre", "-"),
+                datos.get("apellido", "-"),
+                datos.get("celular", "-"),
+                datos.get("fecha_nacimiento", "-"),
+            )
+            tabla.insert("", tk.END, values=fila)
+            mensaje_busqueda.config(text="")
+        else:
+            mensaje_busqueda.config(text=f"No se encontró al administrador '{usuario_buscado}'.", fg=COLOR_ERROR)
 
     def eliminar_admin():
         seleccionado = tabla.focus()
         if not seleccionado:
-            mensaje_label.config(text="Seleccioná un administrador para eliminar.", fg=COLOR_ERROR)
+            mensaje_accion.config(text="Seleccioná un administrador para eliminar.", fg=COLOR_ERROR)
             return
 
         usuario = tabla.item(seleccionado)["values"][0]
         if usuario == "admin_general":
-            mensaje_label.config(text="No se puede eliminar al administrador general.", fg=COLOR_ERROR)
+            mensaje_accion.config(text="No se puede eliminar al administrador general.", fg=COLOR_ERROR)
             return
 
         try:
@@ -87,7 +124,7 @@ def mostrar_gestion_administradores(ventana):
                 json.dump(usuarios, archivo, indent=4)
 
             cargar_lista_administradores()
-            mensaje_label.config(text=f"Administrador '{usuario}' eliminado.", fg=COLOR_EXITO)
+            mensaje_accion.config(text=f"Administrador '{usuario}' eliminado.", fg=COLOR_EXITO)
 
     def agregar_admin():
         mostrar_registro_usuario(
@@ -100,8 +137,10 @@ def mostrar_gestion_administradores(ventana):
     def volver_al_menu_admin():
         from interfaces.administrador.menu_admin import mostrar_menu_admin
         mostrar_menu_admin("admin_general", ventana)
-    tk.Button(ventana, text="Eliminar", command=eliminar_admin, **CONFIG_BOTON_FORMULARIO).place(x=50, y=500)
+    
+    tk.Button(ventana, text="Buscar", command=buscar_admin, **CONFIG_BOTON_FORMULARIO).place(x=450, y=200)
+    tk.Button(ventana, text="Eliminar", command=eliminar_admin, **CONFIG_BOTON_FORMULARIO).place(x=50, y=550)
     tk.Button(ventana, text="Agregar", command=agregar_admin, **CONFIG_BOTON_FORMULARIO).place(x=600, y=140)
-    tk.Button(ventana, text="Volver al menú", command=volver_al_menu_admin, **CONFIG_BOTON_FORMULARIO).place(x=600, y=500)
+    tk.Button(ventana, text="Volver al menú", command=volver_al_menu_admin, **CONFIG_BOTON_FORMULARIO).place(x=600, y=550)
 
     cargar_lista_administradores()

@@ -3,6 +3,7 @@ Se gestionan las validaciones de login y registro de usuarios
 '''
 import json
 import os
+from datetime import datetime, date
 from servicios.validaciones import (
     es_letras, es_fecha_valida, es_celular_valido,
     es_usuario_valido, es_contraseña_valida, coinciden_contraseñas
@@ -40,16 +41,27 @@ def validar_login(usuario, contraseña):
     if datos["bloqueado"]:
         return False, "La cuenta está bloqueada. Contacte al administrador.", None
 
+    # Validación de tipo
+    tipo = datos.get("tipo")
+    if tipo not in ["admin", "cliente"]:
+        return False, "El tipo de usuario no está definido.", None
+
     # Éxito
-    return True, f"Bienvenido {datos['nombre']} ({datos['tipo']})", datos["tipo"]
+    return True, None, tipo
 
 def validar_registro(datos, usuarios_existentes):
     errores = []
     
     campos_obligatorios = ["nombre", "apellido", "fecha_nacimiento", "celular", "usuario", "contraseña", "confirmar_contraseña"]
     for campo in campos_obligatorios:
-        if not datos[campo].strip():
-            errores.append(f"El campo '{campo}' es obligatorio.")
+        valor = datos.get(campo)
+
+        if campo == "fecha_nacimiento":
+            if not isinstance(valor, (date, datetime)):
+                errores.append("La fecha de nacimiento es obligatoria y debe ser válida.")
+        else:
+            if not isinstance(valor, str) or not valor.strip():
+                errores.append(f"El campo '{campo}' es obligatorio.")
 
     if not es_letras(datos["nombre"]):
         errores.append("El nombre solo debe contener letras.")
@@ -59,7 +71,7 @@ def validar_registro(datos, usuarios_existentes):
 
     estado_fecha = es_fecha_valida(datos["fecha_nacimiento"])
     if estado_fecha == "formato_invalido":
-        errores.append("La fecha debe tener el formato DD/MM/AAAA.")
+        errores.append("La fecha ingresada no es válida.")
     elif estado_fecha == "menor_edad":
         errores.append("Debés tener al menos 18 años para registrarte.")
     elif estado_fecha == "fecha_futura":
@@ -83,7 +95,8 @@ def validar_registro(datos, usuarios_existentes):
     if not coinciden_contraseñas(datos["contraseña"], datos["confirmar_contraseña"]):
         errores.append("Las contraseñas no coinciden.")
 
-    if errores:
-        return False, errores
-    else:
-        return True, ["Cuenta creada correctamente."]
+    tipo = datos.get("tipo")
+    if tipo not in ["cliente", "admin"]:
+        errores.append("El tipo de usuario no es válido.")
+
+    return (False, errores) if errores else (True, ["Cuenta creada correctamente."])

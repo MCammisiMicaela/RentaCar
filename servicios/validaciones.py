@@ -2,18 +2,26 @@
 Validaciones básicas por campo
 '''
 import re
-from datetime import datetime
+from datetime import datetime, date
+
 
 def es_letras(texto):
     return bool(re.fullmatch(r"[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+", texto.strip()))
 
-def es_fecha_valida(fecha_str):
-    try:
-        fecha = datetime.strptime(fecha_str, "%d/%m/%Y")
-    except ValueError:
+def es_fecha_valida(fecha):
+    if isinstance(fecha, str):
+        try:
+            fecha = datetime.strptime(fecha, "%d/%m/%Y").date()
+        except ValueError:
+            return "formato_invalido"
+
+    if not isinstance(fecha, (date, datetime)):
         return "formato_invalido"
 
-    hoy = datetime.today()
+    hoy = date.today()
+    if isinstance(fecha, datetime):
+        fecha = fecha.date()
+
     edad = hoy.year - fecha.year - ((hoy.month, hoy.day) < (fecha.month, fecha.day))
 
     if edad < 18:

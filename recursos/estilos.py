@@ -75,7 +75,7 @@ CONFIG_BOTON_FORMULARIO = {
     "bg": COLOR_BOTON,
     "fg": COLOR_TEXTO_BOTON,
     "activebackground": COLOR_HOVER_BOTON_CLARO,
-    "width": 15,
+    "width": 17,
     "borderwidth": 0
 }
 

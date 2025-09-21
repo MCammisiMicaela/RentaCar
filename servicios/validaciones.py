@@ -35,12 +35,12 @@ def es_fecha_valida(fecha):
 def es_celular_valido(celular):
      return celular.isdigit() and len(celular) >= 8
 
-def es_usuario_valido(usuario, existentes):
+def es_usuario_valido(usuario, existentes, modo):
     if len(usuario) < 4:
         return "corto"
     if not usuario.isalnum():
         return "formato_invalido"
-    if usuario in existentes:
+    if usuario in existentes and modo != "edicion":
         return "repetido"
     return "valido"
 
@@ -53,3 +53,18 @@ def es_contraseña_valida(contraseña):
 
 def coinciden_contraseñas(contraseña, confirmacion):
     return contraseña == confirmacion
+
+def validar_cambio_contraseña(actual, nueva, confirmacion, contraseña_guardada):
+    if not actual or not nueva or not confirmacion:
+        return False, "Todos los campos son obligatorios para cambiar la contraseña."
+
+    if actual != contraseña_guardada:
+        return False, "La contraseña actual no es válida."
+
+    if len(nueva) < 4:
+        return False, "La nueva contraseña debe tener al menos 4 caracteres."
+
+    if nueva != confirmacion:
+        return False, "La confirmación no coincide."
+
+    return True, "Contraseña válida."

@@ -49,10 +49,12 @@ def validar_login(usuario, contraseña):
     # Éxito
     return True, None, tipo
 
-def validar_registro(datos, usuarios_existentes):
+def validar_registro(datos, usuarios_existentes, modo="registro"):
     errores = []
     
-    campos_obligatorios = ["nombre", "apellido", "fecha_nacimiento", "celular", "usuario", "contraseña", "confirmar_contraseña"]
+    campos_obligatorios = ["nombre", "apellido", "fecha_nacimiento", "celular", "usuario"]
+    if modo == "registro":
+        campos_obligatorios += ["contraseña", "confirmar_contraseña"]
     for campo in campos_obligatorios:
         valor = datos.get(campo)
 
@@ -80,7 +82,7 @@ def validar_registro(datos, usuarios_existentes):
     if not es_celular_valido(datos["celular"]):
         errores.append("El celular solo debe contener números.")
 
-    estado_usuario = es_usuario_valido(datos["usuario"], usuarios_existentes)
+    estado_usuario = es_usuario_valido(datos["usuario"], usuarios_existentes, modo)
 
     if estado_usuario == "corto":
         errores.append("El nombre de usuario debe tener al menos 4 caracteres.")
@@ -88,12 +90,12 @@ def validar_registro(datos, usuarios_existentes):
         errores.append("El nombre de usuario no debe contener espacios ni símbolos.")
     elif estado_usuario == "repetido":
         errores.append("El nombre de usuario ya está registrado.")
-
-    if not es_contraseña_valida(datos["contraseña"]):
-        errores.append("La contraseña debe tener al menos 6 caracteres, incluir letras y números.")
-
-    if not coinciden_contraseñas(datos["contraseña"], datos["confirmar_contraseña"]):
-        errores.append("Las contraseñas no coinciden.")
+    
+    if modo == "registro":
+        if not es_contraseña_valida(datos["contraseña"]):
+            errores.append("La contraseña debe tener al menos 6 caracteres, incluir letras y números.")
+        if not coinciden_contraseñas(datos["contraseña"], datos["confirmar_contraseña"]):
+            errores.append("Las contraseñas no coinciden.")
 
     tipo = datos.get("tipo")
     if tipo not in ["cliente", "admin"]:

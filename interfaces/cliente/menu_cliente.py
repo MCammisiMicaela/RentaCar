@@ -2,9 +2,12 @@ import tkinter as tk
 from PIL import Image, ImageTk
 from tkcalendar import DateEntry
 from recursos.estilos import *
+from interfaces.comunes.mi_cuenta import mostrar_mi_cuenta
 
-def mostrar_menu_cliente(volver_a_login):
-    ventana = tk.Toplevel()
+def mostrar_menu_cliente(usuario_actual, ventana):
+    for widget in ventana.winfo_children():
+        widget.destroy()
+    ventana.deiconify()
     ventana.title("RentaCar - Alquiler de autos")
     ventana.geometry(f"{ANCHO_VENTANA}x{ALTO_VENTANA}")
     ventana.resizable(False, False)
@@ -23,11 +26,15 @@ def mostrar_menu_cliente(volver_a_login):
     tk.Label(ventana, text="Alquiler de autos", **CONFIG_LABEL_TITULO_GRANDE).place(x=30, y=140)
     tk.Label(ventana, text="Ubi: Terminal de colectivos, Esperanza", **CONFIG_LABEL_FORMULARIO).place(x=30, y=200)
 
+    def cerrar_sesion():
+        from interfaces.comunes.login import mostrar_login
+        mostrar_login(ventana)
+
     # Botones de cuenta
     botones_derecha = [
-        ("Mi cuenta", 200, lambda: print("Ir a Mi cuenta")),
+        ("Mi cuenta", 200, lambda: mostrar_mi_cuenta(usuario_actual, ventana)),
         ("Mis reservas", 260, lambda: print("Ir a Mis reservas")),
-        ("Cerrar sesión", 320, lambda: [ventana.destroy(), volver_a_login()])
+        ("Cerrar sesión", 320, lambda: cerrar_sesion())
     ]
 
     for texto, y, comando in botones_derecha:

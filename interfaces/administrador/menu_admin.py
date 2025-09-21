@@ -4,6 +4,7 @@ from recursos.estilos import *
 from interfaces.comunes.registro_usuario import mostrar_registro_usuario
 from interfaces.administrador.gestion_administradores import mostrar_gestion_administradores
 from interfaces.administrador.gestionar_clientes import mostrar_gestion_clientes
+from interfaces.comunes.mi_cuenta import mostrar_mi_cuenta
 
 def mostrar_menu_admin(usuario_actual, ventana):
     for widget in ventana.winfo_children():
@@ -52,5 +53,5 @@ def mostrar_menu_admin(usuario_actual, ventana):
         mostrar_login(ventana)
 
     # Botones de cuenta personal
-    tk.Button(ventana, text="Mi cuenta", command=mostrar_creacion_admin, **CONFIG_BOTON_FORMULARIO).place(x=600, y=200)
+    tk.Button(ventana, text="Mi cuenta", command=lambda: mostrar_mi_cuenta(usuario_actual, ventana), **CONFIG_BOTON_FORMULARIO).place(x=600, y=200)
     tk.Button(ventana,text="Cerrar sesión", command=cerrar_sesion, **CONFIG_BOTON_FORMULARIO).place(x=600, y=260)

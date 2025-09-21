@@ -56,7 +56,7 @@ def mostrar_login(ventana):
         if tipo == "admin":
             mostrar_menu_admin(usuario, ventana)
         elif tipo == "cliente":
-            mostrar_menu_cliente(lambda: mostrar_login(ventana))
+            mostrar_menu_cliente(usuario, ventana)
         else:
             print("Tipo de usuario desconocido.")
 

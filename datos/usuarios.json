@@ -27,17 +27,18 @@
         "usuario": "CamiCombin",
         "contrase\u00f1a": "cami123",
         "tipo": "cliente",
-        "bloqueado": true
+        "bloqueado": false
     },
     "admin1": {
-        "nombre": "Malena",
+        "nombre": "Male",
         "apellido": "Breques",
         "fecha_nacimiento": "20/09/2003",
-        "celular": "3496280825",
+        "celular": "3496280828",
         "usuario": "admin1",
         "contrase\u00f1a": "admin1123",
         "tipo": "admin",
-        "bloqueado": false
+        "bloqueado": false,
+        "confirmar_contrase\u00f1a": "admin1123"
     },
     "mica": {
         "nombre": "Micaela",
@@ -47,7 +48,7 @@
         "usuario": "mica",
         "contrase\u00f1a": "mica123",
         "tipo": "cliente",
-        "bloqueado": true
+        "bloqueado": false
     },
     "male": {
         "nombre": "Malena",

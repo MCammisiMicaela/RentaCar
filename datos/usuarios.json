@@ -5,7 +5,7 @@
         "fecha_nacimiento": "03/08/2001",
         "celular": "3496540538",
         "usuario": "admin_general",
-        "contraseña": "admin123",
+        "contrase\u00f1a": "admin123",
         "tipo": "admin",
         "bloqueado": false
     },
@@ -15,10 +15,58 @@
         "fecha_nacimiento": "03/08/2001",
         "celular": "3496540219",
         "usuario": "cliente",
-        "contraseña": "cliente123",
+        "contrase\u00f1a": "cliente123",
+        "tipo": "cliente",
+        "bloqueado": false
+    },
+    "CamiCombin": {
+        "nombre": "Camila",
+        "apellido": "Combin",
+        "fecha_nacimiento": "20/09/2001",
+        "celular": "3496725079",
+        "usuario": "CamiCombin",
+        "contrase\u00f1a": "cami123",
+        "tipo": "cliente",
+        "bloqueado": false
+    },
+    "admin1": {
+        "nombre": "Malena",
+        "apellido": "Breques",
+        "fecha_nacimiento": "20/09/2003",
+        "celular": "3496280825",
+        "usuario": "admin1",
+        "contrase\u00f1a": "admin1123",
+        "tipo": "admin",
+        "bloqueado": false
+    },
+    "admin2": {
+        "nombre": "Lionel",
+        "apellido": "Kemerer",
+        "fecha_nacimiento": "20/09/2002",
+        "celular": "3496280478",
+        "usuario": "admin2",
+        "contrase\u00f1a": "admin2",
+        "tipo": "admin",
+        "bloqueado": false
+    },
+    "mica": {
+        "nombre": "Micaela",
+        "apellido": "Cammisi",
+        "fecha_nacimiento": "21/09/2000",
+        "celular": "3496357098",
+        "usuario": "mica",
+        "contrase\u00f1a": "mica123",
+        "tipo": "cliente",
+        "bloqueado": false
+    },
+    "male": {
+        "nombre": "Malena",
+        "apellido": "Breques",
+        "fecha_nacimiento": "21/09/2003",
+        "celular": "3496398210",
+        "usuario": "male",
+        "contrase\u00f1a": "male123",
         "tipo": "cliente",
         "bloqueado": false
     }
-
-
 }

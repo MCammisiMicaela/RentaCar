@@ -3,15 +3,15 @@ from PIL import Image, ImageTk
 from tkcalendar import DateEntry
 from recursos.estilos import *
 
-def mostrar_menu_cliente():
+def mostrar_menu_cliente(volver_a_login):
     ventana = tk.Toplevel()
     ventana.title("RentaCar - Alquiler de autos")
-    ventana.geometry("800x600")
+    ventana.geometry(f"{ANCHO_VENTANA}x{ALTO_VENTANA}")
     ventana.resizable(False, False)
 
     # Fondo
     try:
-        fondo = Image.open(RUTA_FONDO_LIMPIO).resize((800, 600))
+        fondo = Image.open(RUTA_FONDO_LIMPIO).resize(TAMANIO_FONDO)
         fondo_img = ImageTk.PhotoImage(fondo)
         fondo_label = tk.Label(ventana, image=fondo_img)
         fondo_label.image = fondo_img
@@ -20,77 +20,32 @@ def mostrar_menu_cliente():
         print("Error al cargar fondo:", e)
 
     # Encabezado
-    tk.Label(ventana, text="Alquiler de autos", font=("Segoe UI", 24, "bold"),
-             bg=COLOR_FONDO, fg=COLOR_TEXTO).place(x=30, y=140)
+    tk.Label(ventana, text="Alquiler de autos", **CONFIG_LABEL_TITULO_GRANDE).place(x=30, y=140)
+    tk.Label(ventana, text="Ubi: Terminal de colectivos, Esperanza", **CONFIG_LABEL_FORMULARIO).place(x=30, y=200)
 
-    tk.Label(ventana, text="Ubi: Terminal de colectivos, Esperanza", font=TIPO_LETRA,
-             bg=COLOR_FONDO, fg=COLOR_TEXTO).place(x=30, y=200)
+    # Botones de cuenta
+    botones_derecha = [
+        ("Mi cuenta", 200, lambda: print("Ir a Mi cuenta")),
+        ("Mis reservas", 260, lambda: print("Ir a Mis reservas")),
+        ("Cerrar sesión", 320, lambda: [ventana.destroy(), volver_a_login()])
+    ]
 
-    # Botón Mi cuenta
-    tk.Button(
-        ventana,
-        text="Mi cuenta",
-        font=TIPO_LETRA,
-        bg=COLOR_BOTON,
-        fg=COLOR_FONDO,
-        activebackground=COLOR_HOVER_BOTON_CLARO,
-        width=15,
-        height=2,
-        bd=0,
-        command=lambda: print("Ir a Mi cuenta")
-    ).place(x=600, y=200)
-
-    # Botón Mis reservas 
-    tk.Button(
-        ventana,
-        text="Mis reservas",
-        font=TIPO_LETRA,
-        bg=COLOR_BOTON,
-        fg=COLOR_FONDO,
-        activebackground=COLOR_HOVER_BOTON_CLARO,
-        width=15,  # igual que los otros
-        height=2,
-        bd=0,
-        command=lambda: print("Ir a Mis reservas")
-    ).place(x=600, y=260)
-
-    # Botón Cerrar sesión
-    tk.Button(
-        ventana,
-        text="Cerrar sesión",
-        font=TIPO_LETRA,
-        bg=COLOR_BOTON,
-        fg=COLOR_FONDO,
-        activebackground=COLOR_HOVER_BOTON_CLARO,
-        width=15,
-        height=2,
-        bd=0,
-        command=ventana.destroy
-    ).place(x=600, y=320)
+    for texto, y, comando in botones_derecha:
+        tk.Button(ventana, text=texto, command=comando, **CONFIG_BOTON_FORMULARIO).place(x=600, y=y)
 
     # Selector de fechas
-    tk.Label(ventana, text="Fecha de entrega:", font=TIPO_LETRA,
-             bg=COLOR_FONDO, fg=COLOR_TEXTO).place(x=50, y=400)
-    fecha_entrega = DateEntry(ventana, width=12, background=COLOR_BOTON,
-                              foreground=COLOR_FONDO, borderwidth=0, date_pattern='dd/mm/yyyy')
+    tk.Label(ventana, text="Fecha de entrega:", **CONFIG_LABEL_FORMULARIO).place(x=50, y=400)
+    fecha_entrega = DateEntry(ventana, **CONFIG_FECHA)
     fecha_entrega.place(x=200, y=400)
 
-    tk.Label(ventana, text="Fecha de devolución:", font=TIPO_LETRA,
-             bg=COLOR_FONDO, fg=COLOR_TEXTO).place(x=50, y=440)
-    fecha_devolucion = DateEntry(ventana, width=12, background=COLOR_BOTON,
-                                 foreground=COLOR_FONDO, borderwidth=0, date_pattern='dd/mm/yyyy')
+    tk.Label(ventana, text="Fecha de devolución:", **CONFIG_LABEL_FORMULARIO).place(x=50, y=440)
+    fecha_devolucion = DateEntry(ventana, **CONFIG_FECHA)
     fecha_devolucion.place(x=200, y=440)
 
     # Botón Buscar
     tk.Button(
         ventana,
         text="Buscar",
-        font=TIPO_LETRA,
-        bg=COLOR_BOTON,
-        fg=COLOR_FONDO,
-        activebackground=COLOR_HOVER_BOTON_CLARO,
-        width=15,
-        height=2,
-        bd=0,
-        command=lambda: print("Buscar autos entre", fecha_entrega.get(), "y", fecha_devolucion.get())
+        command=lambda: print("Buscar autos entre", fecha_entrega.get(), "y", fecha_devolucion.get()),
+        **CONFIG_BOTON
     ).place(x=600, y=500)

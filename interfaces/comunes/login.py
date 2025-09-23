@@ -2,64 +2,76 @@ import tkinter as tk
 from PIL import Image, ImageTk
 from recursos.estilos import *
 from servicios.autenticacion import validar_login
-from interfaces.cliente.registro_cliente import mostrar_registro_cliente
+from interfaces.comunes.registro_usuario import mostrar_registro_usuario
 from interfaces.administrador.menu_admin import mostrar_menu_admin
 from interfaces.cliente.menu_cliente import mostrar_menu_cliente
 
-def mostrar_login():
-    ventana = tk.Tk()
+def mostrar_login(ventana):
+    for widget in ventana.winfo_children():
+        widget.destroy()
+
+    ventana.deiconify()
     ventana.title("RentaCar - Inicio de sesión")
-    ventana.geometry("800x600")
+    ventana.geometry(f"{ANCHO_VENTANA}x{ALTO_VENTANA}")
     ventana.resizable(False, False)
 
     # Fondo
-    imagen_original = Image.open(RUTA_FONDO)
-    imagen_redimensionada = imagen_original.resize((800, 600))
-    fondo_img = ImageTk.PhotoImage(imagen_redimensionada)
+    fondo = Image.open(RUTA_FONDO).resize(TAMANIO_FONDO)
+    fondo_img = ImageTk.PhotoImage(fondo)
     fondo_label = tk.Label(ventana, image=fondo_img)
+    fondo_label.image = fondo_img
     fondo_label.place(x=0, y=0, relwidth=1, relheight=1)
+    fondo_label.lower()  # Envía el fondo al fondo de la pila de widgets
+
+    tk.Label(ventana, text="Usuario:", **CONFIG_LABEL_FORMULARIO).place(x=250, y=220)
+    tk.Label(ventana, text="Contraseña:", **CONFIG_LABEL_FORMULARIO).place(x=250, y=260)
 
     # Campos
-    tk.Label(ventana, text="Usuario:", font=TIPO_LETRA, bg=COLOR_FONDO, fg=COLOR_TEXTO).place(x=250, y=220)
-    entry_usuario = tk.Entry(ventana, width=30)
-    entry_usuario.place(x=350, y=220)
-
-    tk.Label(ventana, text="Contraseña:", font=TIPO_LETRA, bg=COLOR_FONDO, fg=COLOR_TEXTO).place(x=250, y=260)
-    entry_contraseña = tk.Entry(ventana, width=30, show="*")
-    entry_contraseña.place(x=350, y=260)
+    campos = {
+        "usuario": tk.Entry(ventana, **CONFIG_ENTRY),
+        "contrasenia": tk.Entry(ventana, show="*", **CONFIG_ENTRY)
+        }
+    
+    campos["usuario"].place(x=350, y=220)
+    campos["contrasenia"].place(x=350, y=260)
 
     # Mensaje dinámico
-    mensaje_label = tk.Label(ventana, text="", font=TIPO_LETRA, bg=COLOR_FONDO)
+    mensaje_label = tk.Label(ventana, text="", **CONFIG_MENSAJE)
     mensaje_label.place(x=350, y=290)
 
-    # Acción del botón login
+    # Acción del botón "Iniciar sesión"
     def intentar_login():
-        usuario = entry_usuario.get().strip()
-        contraseña = entry_contraseña.get().strip()
+        usuario = campos["usuario"].get().strip()
+        contraseña = campos["contrasenia"].get().strip()
 
-        estado, mensaje, tipo = validar_login(usuario, contraseña)
+        estado, mensaje, usuario_obj = validar_login(usuario, contraseña)  # Ahora devuelve el objeto usuario
 
-        if not estado:
+        if not estado: 
             mensaje_label.config(text=mensaje, fg=COLOR_ERROR)
             return
 
         mensaje_label.config(text=mensaje, fg=COLOR_EXITO)
-        ventana.withdraw() # oculta la ventana de login
+        ventana.withdraw()  # oculta la ventana de login
 
-        # Redirección por tipo
-        if tipo == "admin":
-            mostrar_menu_admin()
-        elif tipo == "cliente":
-            mostrar_menu_cliente()
+        if usuario_obj.tipo == "admin":
+            mostrar_menu_admin(usuario_obj, ventana)  # Pasa el objeto usuario
+        elif usuario_obj.tipo == "cliente":
+            mostrar_menu_cliente(usuario_obj, ventana)  # Pasa el objeto usuario
         else:
             print("Tipo de usuario desconocido.")
 
-    # Botón Iniciar sesión
-    btn_login = tk.Button(ventana, text="Iniciar sesión", font=TIPO_LETRA, bg=COLOR_BOTON, fg=COLOR_TEXTO_BOTON, width=15, command=intentar_login)
-    btn_login.place(x=350, y=320)
+    # Botones
+    tk.Button(ventana, text="Iniciar sesión", command=intentar_login, **CONFIG_BOTON_FORMULARIO).place(x=350, y=320)
 
-    # Botón Registrarse (puede abrir otra ventana)
-    btn_registro = tk.Button(ventana, text="Registrarse", font=TIPO_LETRA, bg=COLOR_BOTON, fg=COLOR_TEXTO_BOTON, width=15, command=mostrar_registro_cliente)
-    btn_registro.place(x=350, y=370)
+    def mostrar_registro_cliente():
+        mostrar_registro_usuario(
+            tipo_usuario="cliente",
+            titulo="Registro de cliente",
+            mensaje_exito="Cuenta creada correctamente.", 
+            ventana = ventana
+        )
 
-    ventana.mainloop()
+    tk.Button(ventana, text="Registrarse", command=mostrar_registro_cliente, **CONFIG_BOTON_FORMULARIO).place(x=350, y=370)
+
+
+

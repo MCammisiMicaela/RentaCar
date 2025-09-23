@@ -1,17 +1,14 @@
 '''
 Se gestionan las validaciones de login y registro de usuarios
 '''
-import json
-import os
+from datetime import datetime, date
+from servicios.gestion_usuarios import cargar_usuarios
 from servicios.validaciones import (
     es_letras, es_fecha_valida, es_celular_valido,
     es_usuario_valido, es_contraseña_valida, coinciden_contraseñas
 )
 
-RUTA_USUARIOS = os.path.join("datos", "usuarios.json")
-
 def validar_login(usuario, contraseña):
-    # Validación de campos vacíos
     if not usuario and not contraseña:
         return False, "Debe completar el nombre de usuario y la contraseña.", None
     if not usuario:
@@ -19,37 +16,37 @@ def validar_login(usuario, contraseña):
     if not contraseña:
         return False, "Debe completar la contraseña.", None
 
-    # Cargar usuarios
-    try:
-        with open(RUTA_USUARIOS, "r", encoding="utf-8") as archivo:
-            usuarios = json.load(archivo)
-    except (FileNotFoundError, json.JSONDecodeError):
-        return False, "No se pudo acceder a los datos de usuarios.", None
+    usuarios = cargar_usuarios()
+    usuario_obj = next((u for u in usuarios if u.usuario == usuario), None)
+    if not usuario_obj:
+        return False, "El usuario ingresado no existe.", None
 
-    # Validación de existencia
-    if usuario not in usuarios:
-        return False, "El usuario ingresado no existe.",None
-
-    datos = usuarios[usuario]
-
-    # Validación de contraseña
-    if datos["contraseña"] != contraseña:
+    if usuario_obj.contraseña != contraseña:
         return False, "La contraseña es incorrecta.", None
 
-    # Validación de bloqueo
-    if datos["bloqueado"]:
+    if usuario_obj.bloqueado:
         return False, "La cuenta está bloqueada. Contacte al administrador.", None
 
-    # Éxito
-    return True, f"Bienvenido {datos['nombre']} ({datos['tipo']})", datos["tipo"]
+    if usuario_obj.tipo not in ["admin", "cliente"]:
+        return False, "El tipo de usuario no está definido.", None
 
-def validar_registro(datos, usuarios_existentes):
+    return True, None, usuario_obj
+
+def validar_registro(datos, usuarios_existentes, modo="registro"):
     errores = []
     
-    campos_obligatorios = ["nombre", "apellido", "fecha_nacimiento", "celular", "usuario", "contraseña", "confirmar_contraseña"]
+    campos_obligatorios = ["nombre", "apellido", "fecha_nacimiento", "celular", "usuario"]
+    if modo == "registro":
+        campos_obligatorios += ["contraseña", "confirmar_contraseña"]
     for campo in campos_obligatorios:
-        if not datos[campo].strip():
-            errores.append(f"El campo '{campo}' es obligatorio.")
+        valor = datos.get(campo)
+
+        if campo == "fecha_nacimiento":
+            if not isinstance(valor, (date, datetime)):
+                errores.append("La fecha de nacimiento es obligatoria y debe ser válida.")
+        else:
+            if not isinstance(valor, str) or not valor.strip():
+                errores.append(f"El campo '{campo}' es obligatorio.")
 
     if not es_letras(datos["nombre"]):
         errores.append("El nombre solo debe contener letras.")
@@ -59,7 +56,7 @@ def validar_registro(datos, usuarios_existentes):
 
     estado_fecha = es_fecha_valida(datos["fecha_nacimiento"])
     if estado_fecha == "formato_invalido":
-        errores.append("La fecha debe tener el formato DD/MM/AAAA.")
+        errores.append("La fecha ingresada no es válida.")
     elif estado_fecha == "menor_edad":
         errores.append("Debés tener al menos 18 años para registrarte.")
     elif estado_fecha == "fecha_futura":
@@ -68,7 +65,7 @@ def validar_registro(datos, usuarios_existentes):
     if not es_celular_valido(datos["celular"]):
         errores.append("El celular solo debe contener números.")
 
-    estado_usuario = es_usuario_valido(datos["usuario"], usuarios_existentes)
+    estado_usuario = es_usuario_valido(datos["usuario"], usuarios_existentes, modo)
 
     if estado_usuario == "corto":
         errores.append("El nombre de usuario debe tener al menos 4 caracteres.")
@@ -76,14 +73,15 @@ def validar_registro(datos, usuarios_existentes):
         errores.append("El nombre de usuario no debe contener espacios ni símbolos.")
     elif estado_usuario == "repetido":
         errores.append("El nombre de usuario ya está registrado.")
+    
+    if modo == "registro":
+        if not es_contraseña_valida(datos["contraseña"]):
+            errores.append("La contraseña debe tener al menos 6 caracteres, incluir letras y números.")
+        if not coinciden_contraseñas(datos["contraseña"], datos["confirmar_contraseña"]):
+            errores.append("Las contraseñas no coinciden.")
 
-    if not es_contraseña_valida(datos["contraseña"]):
-        errores.append("La contraseña debe tener al menos 6 caracteres, incluir letras y números.")
+    tipo = datos.get("tipo")
+    if tipo not in ["cliente", "admin"]:
+        errores.append("El tipo de usuario no es válido.")
 
-    if not coinciden_contraseñas(datos["contraseña"], datos["confirmar_contraseña"]):
-        errores.append("Las contraseñas no coinciden.")
-
-    if errores:
-        return False, errores
-    else:
-        return True, ["Cuenta creada correctamente."]
+    return (False, errores) if errores else (True, ["Cuenta creada correctamente."])

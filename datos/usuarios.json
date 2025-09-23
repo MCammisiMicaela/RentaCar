@@ -1,73 +1,82 @@
 {
     "admin_general": {
+        "usuario": "admin_general",
         "nombre": "Administrador",
         "apellido": "General",
         "fecha_nacimiento": "03/08/2001",
         "celular": "3496540538",
-        "usuario": "admin_general",
         "contrase\u00f1a": "admin123",
         "tipo": "admin",
         "bloqueado": false
     },
     "cliente": {
+        "usuario": "cliente",
         "nombre": "Micaela",
         "apellido": "Cammisi",
         "fecha_nacimiento": "03/08/2001",
         "celular": "3496540219",
-        "usuario": "cliente",
         "contrase\u00f1a": "cliente123",
         "tipo": "cliente",
         "bloqueado": false
     },
     "CamiCombin": {
+        "usuario": "CamiCombin",
         "nombre": "Camila",
         "apellido": "Combin",
         "fecha_nacimiento": "20/09/2001",
         "celular": "3496725079",
-        "usuario": "CamiCombin",
         "contrase\u00f1a": "cami123",
         "tipo": "cliente",
         "bloqueado": false
     },
     "admin1": {
-        "nombre": "Male",
+        "usuario": "admin1",
+        "nombre": "Malena",
         "apellido": "Breques",
         "fecha_nacimiento": "20/09/2003",
         "celular": "3496280828",
-        "usuario": "admin1",
         "contrase\u00f1a": "admin1123",
         "tipo": "admin",
-        "bloqueado": false,
-        "confirmar_contrase\u00f1a": "admin1123"
+        "bloqueado": false
     },
     "mica": {
+        "usuario": "mica",
         "nombre": "Micaela",
         "apellido": "Cammisi",
         "fecha_nacimiento": "21/09/2000",
         "celular": "3496357098",
-        "usuario": "mica",
         "contrase\u00f1a": "mica123",
         "tipo": "cliente",
         "bloqueado": false
     },
     "male": {
+        "usuario": "male",
         "nombre": "Malena",
         "apellido": "Breques",
         "fecha_nacimiento": "21/09/2003",
         "celular": "3496398210",
-        "usuario": "male",
         "contrase\u00f1a": "male123",
         "tipo": "cliente",
         "bloqueado": false
     },
     "admin2": {
+        "usuario": "admin2",
         "nombre": "Lionel",
         "apellido": "Kemerer",
         "fecha_nacimiento": "21/09/2000",
         "celular": "3496529060",
-        "usuario": "admin2",
         "contrase\u00f1a": "admin2123",
         "tipo": "admin",
+        "bloqueado": false
+    },
+    "cliente1": {
+        "usuario": "cliente1",
+        "nombre": "Mica",
+        "apellido": "Cammisi",
+        "fecha_nacimiento": "22/09/2000",
+        "celular": "3496540219",
+        "contrase\u00f1a": "mica123",
+        "tipo": "cliente",
         "bloqueado": false
     }
 }

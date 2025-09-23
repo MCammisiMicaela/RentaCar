@@ -1,7 +1,6 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 from recursos.estilos import *
-from interfaces.comunes.registro_usuario import mostrar_registro_usuario
 from interfaces.administrador.gestion_administradores import mostrar_gestion_administradores
 from interfaces.administrador.gestionar_clientes import mostrar_gestion_clientes
 from interfaces.comunes.mi_cuenta import mostrar_mi_cuenta
@@ -26,13 +25,6 @@ def mostrar_menu_admin(usuario_actual, ventana):
     # Encabezado
     tk.Label(ventana, text="Sistema administrativo de gestión", **CONFIG_LABEL_TITULO).place(x=30, y=140)
     
-    def mostrar_creacion_admin():
-        mostrar_registro_usuario(
-            tipo_usuario="admin",
-            titulo="Crear administrador",
-            mensaje_exito="Administrador creado con éxito."
-        )
-    
     # Botones de gestión
     botones_izquierda = [
         ("Clientes", lambda: mostrar_gestion_clientes(usuario_actual, ventana)),
@@ -41,8 +33,8 @@ def mostrar_menu_admin(usuario_actual, ventana):
         ("Agregar auto", lambda: print("Ir a Agregar auto"))
     ]
 
-    if usuario_actual == "admin_general":
-        botones_izquierda.insert(1, ("Administradores", lambda: mostrar_gestion_administradores(ventana)))
+    if usuario_actual.usuario == "admin_general":
+        botones_izquierda.insert(1, ("Administradores", lambda: mostrar_gestion_administradores(usuario_actual, ventana)))
 
 
     for i, (texto, comando) in enumerate(botones_izquierda):

@@ -10,6 +10,5 @@ def iniciar_aplicacion():
     mostrar_login(ventana)
     ventana.mainloop()
 
-
 if __name__ == "__main__":
     iniciar_aplicacion()

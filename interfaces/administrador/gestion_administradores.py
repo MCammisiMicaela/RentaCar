@@ -7,7 +7,7 @@ import json, os
 
 RUTA_USUARIOS = os.path.join("datos", "usuarios.json")
 
-def mostrar_gestion_administradores(ventana):
+def mostrar_gestion_administradores(usuario_actual, ventana):
     for widget in ventana.winfo_children():
         widget.destroy()
 
@@ -136,7 +136,7 @@ def mostrar_gestion_administradores(ventana):
 
     def volver_al_menu_admin():
         from interfaces.administrador.menu_admin import mostrar_menu_admin
-        mostrar_menu_admin("admin_general", ventana)
+        mostrar_menu_admin(usuario_actual, ventana)
     
     tk.Button(ventana, text="Buscar", command=buscar_admin, **CONFIG_BOTON_FORMULARIO).place(x=450, y=200)
     tk.Button(ventana, text="Eliminar", command=eliminar_admin, **CONFIG_BOTON_FORMULARIO).place(x=50, y=550)

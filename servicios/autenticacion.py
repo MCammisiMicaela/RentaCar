@@ -1,18 +1,14 @@
 '''
 Se gestionan las validaciones de login y registro de usuarios
 '''
-import json
-import os
 from datetime import datetime, date
+from servicios.gestion_usuarios import cargar_usuarios
 from servicios.validaciones import (
     es_letras, es_fecha_valida, es_celular_valido,
     es_usuario_valido, es_contraseña_valida, coinciden_contraseñas
 )
 
-RUTA_USUARIOS = os.path.join("datos", "usuarios.json")
-
 def validar_login(usuario, contraseña):
-    # Validación de campos vacíos
     if not usuario and not contraseña:
         return False, "Debe completar el nombre de usuario y la contraseña.", None
     if not usuario:
@@ -20,34 +16,21 @@ def validar_login(usuario, contraseña):
     if not contraseña:
         return False, "Debe completar la contraseña.", None
 
-    # Cargar usuarios
-    try:
-        with open(RUTA_USUARIOS, "r", encoding="utf-8") as archivo:
-            usuarios = json.load(archivo)
-    except (FileNotFoundError, json.JSONDecodeError):
-        return False, "No se pudo acceder a los datos de usuarios.", None
+    usuarios = cargar_usuarios()
+    usuario_obj = next((u for u in usuarios if u.usuario == usuario), None)
+    if not usuario_obj:
+        return False, "El usuario ingresado no existe.", None
 
-    # Validación de existencia
-    if usuario not in usuarios:
-        return False, "El usuario ingresado no existe.",None
-
-    datos = usuarios[usuario]
-
-    # Validación de contraseña
-    if datos["contraseña"] != contraseña:
+    if usuario_obj.contraseña != contraseña:
         return False, "La contraseña es incorrecta.", None
 
-    # Validación de bloqueo
-    if datos["bloqueado"]:
+    if usuario_obj.bloqueado:
         return False, "La cuenta está bloqueada. Contacte al administrador.", None
 
-    # Validación de tipo
-    tipo = datos.get("tipo")
-    if tipo not in ["admin", "cliente"]:
+    if usuario_obj.tipo not in ["admin", "cliente"]:
         return False, "El tipo de usuario no está definido.", None
 
-    # Éxito
-    return True, None, tipo
+    return True, None, usuario_obj
 
 def validar_registro(datos, usuarios_existentes, modo="registro"):
     errores = []

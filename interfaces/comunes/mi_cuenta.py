@@ -4,9 +4,7 @@ from tkcalendar import DateEntry
 from recursos.estilos import *
 from servicios.autenticacion import validar_registro
 from servicios.validaciones import validar_cambio_contraseña
-import json, os
-
-RUTA_USUARIOS = os.path.join("datos", "usuarios.json")
+from servicios.gestion_usuarios import cargar_usuarios, guardar_usuarios
 
 def mostrar_mi_cuenta(usuario_actual, ventana):
     for widget in ventana.winfo_children():
@@ -25,15 +23,6 @@ def mostrar_mi_cuenta(usuario_actual, ventana):
         fondo_label.place(x=0, y=0, relwidth=1, relheight=1)
     except Exception as e:
         print("Error al cargar fondo:", e)
-
-    # Cargar datos actuales
-    try:
-        with open(RUTA_USUARIOS, "r", encoding="utf-8") as archivo:
-            usuarios = json.load(archivo)
-    except:
-        usuarios = {}
-
-    datos_actuales = usuarios.get(usuario_actual, {})
 
     # Frame principal
     frame = tk.Frame(ventana, bg=COLOR_FONDO, width=800, height=800)
@@ -55,15 +44,15 @@ def mostrar_mi_cuenta(usuario_actual, ventana):
         y_actual += 40
         return entrada
 
-    entrada_nombre = campo("Nombre:", datos_actuales.get("nombre", ""))
-    entrada_apellido = campo("Apellido:", datos_actuales.get("apellido", ""))
+    entrada_nombre = campo("Nombre:", usuario_actual.nombre)
+    entrada_apellido = campo("Apellido:", usuario_actual.apellido)
     tk.Label(frame, text="Fecha de nacimiento:", **CONFIG_LABEL_FORMULARIO).place(x=30, y=y_actual)
     entrada_fecha = DateEntry(frame, **CONFIG_FECHA)
     entrada_fecha.place(x=250, y=y_actual)
-    entrada_fecha.set_date(datos_actuales.get("fecha_nacimiento", "01/01/2000"))
+    entrada_fecha.set_date(usuario_actual.fecha_nacimiento)
     y_actual += 40
-    entrada_celular = campo("Celular:", datos_actuales.get("celular", ""))
-    entrada_usuario = campo("Nombre de usuario:", usuario_actual, estado="disabled")
+    entrada_celular = campo("Celular:", usuario_actual.celular)
+    entrada_usuario = campo("Nombre de usuario:", usuario_actual.usuario, estado="disabled")
 
     mensaje_datos = tk.Label(frame, text="", **CONFIG_MENSAJE)
     mensaje_datos.place(x=30, y=y_actual)
@@ -74,26 +63,35 @@ def mostrar_mi_cuenta(usuario_actual, ventana):
             "apellido": entrada_apellido.get().strip(),
             "fecha_nacimiento": entrada_fecha.get_date(),
             "celular": entrada_celular.get().strip(),
-            "usuario": usuario_actual,
-            "contraseña": datos_actuales.get("contraseña"),
-            "confirmar_contraseña": datos_actuales.get("contraseña"),
-            "tipo": datos_actuales.get("tipo"),
-            "bloqueado": datos_actuales.get("bloqueado", False)
+            "usuario": usuario_actual.usuario,
+            "contraseña": usuario_actual.contraseña,
+            "confirmar_contraseña": usuario_actual.contraseña,
+            "tipo": usuario_actual.tipo,
+            "bloqueado": usuario_actual.bloqueado
         }
 
-        estado, mensajes = validar_registro(nuevos_datos, {usuario_actual: datos_actuales}, modo="edicion")
+        estado, mensajes = validar_registro(nuevos_datos, [usuario_actual.usuario], modo="edicion")
         if not estado:
             mensaje_datos.config(text=mensajes[0], fg=COLOR_ERROR)
             return
 
-        nuevos_datos["fecha_nacimiento"] = nuevos_datos["fecha_nacimiento"].strftime("%d/%m/%Y")
-        usuarios[usuario_actual].update(nuevos_datos)
+        # Actualiza atributos del objeto
+        usuario_actual.nombre = nuevos_datos["nombre"]
+        usuario_actual.apellido = nuevos_datos["apellido"]
+        usuario_actual.fecha_nacimiento = nuevos_datos["fecha_nacimiento"].strftime("%d/%m/%Y") \
+            if hasattr(nuevos_datos["fecha_nacimiento"], "strftime") else nuevos_datos["fecha_nacimiento"]
+        usuario_actual.celular = nuevos_datos["celular"]
 
-        with open(RUTA_USUARIOS, "w", encoding="utf-8") as archivo:
-            json.dump(usuarios, archivo, indent=4)
+        # Guarda todos los usuarios
+        usuarios = cargar_usuarios()
+        for i, u in enumerate(usuarios):
+            if u.usuario == usuario_actual.usuario:
+                usuarios[i] = usuario_actual
+                break
+        guardar_usuarios(usuarios)
 
         mensaje_datos.config(text="Datos actualizados correctamente.", fg=COLOR_EXITO)
-
+    
     tk.Button(frame, text="Guardar cambios", command=guardar_datos_personales, **CONFIG_BOTON_FORMULARIO).place(x=550, y=y_actual - 40)
     y_actual += 50
 
@@ -125,16 +123,20 @@ def mostrar_mi_cuenta(usuario_actual, ventana):
             actual=actual,
             nueva=nueva,
             confirmacion=confirmacion,
-            contraseña_guardada=datos_actuales.get("contraseña")
+            contraseña_guardada=usuario_actual.contraseña
         )
 
         if not estado:
             mensaje_contrasenia.config(text=mensaje, fg=COLOR_ERROR)
             return
 
-        usuarios[usuario_actual]["contraseña"] = nueva
-        with open(RUTA_USUARIOS, "w", encoding="utf-8") as archivo:
-            json.dump(usuarios, archivo, indent=4)
+        usuario_actual.contraseña = nueva
+        usuarios = cargar_usuarios()
+        for i, u in enumerate(usuarios):
+            if u.usuario == usuario_actual.usuario:
+                usuarios[i] = usuario_actual
+                break
+        guardar_usuarios(usuarios)
 
         mensaje_contrasenia.config(text="Contraseña actualizada correctamente.", fg=COLOR_EXITO)
 
@@ -142,7 +144,7 @@ def mostrar_mi_cuenta(usuario_actual, ventana):
 
     # Botón volver abajo centrado
     def volver():
-        if datos_actuales.get("tipo") == "admin":
+        if usuario_actual.tipo == "admin":
             from interfaces.administrador.menu_admin import mostrar_menu_admin
             mostrar_menu_admin(usuario_actual, ventana)
         else:

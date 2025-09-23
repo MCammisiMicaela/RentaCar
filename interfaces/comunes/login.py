@@ -44,19 +44,19 @@ def mostrar_login(ventana):
         usuario = campos["usuario"].get().strip()
         contraseña = campos["contrasenia"].get().strip()
 
-        estado, mensaje, tipo = validar_login(usuario, contraseña) # Autenticación
+        estado, mensaje, usuario_obj = validar_login(usuario, contraseña)  # Ahora devuelve el objeto usuario
 
         if not estado: 
             mensaje_label.config(text=mensaje, fg=COLOR_ERROR)
             return
 
         mensaje_label.config(text=mensaje, fg=COLOR_EXITO)
-        ventana.withdraw() # oculta la ventana de login
+        ventana.withdraw()  # oculta la ventana de login
 
-        if tipo == "admin":
-            mostrar_menu_admin(usuario, ventana)
-        elif tipo == "cliente":
-            mostrar_menu_cliente(usuario, ventana)
+        if usuario_obj.tipo == "admin":
+            mostrar_menu_admin(usuario_obj, ventana)  # Pasa el objeto usuario
+        elif usuario_obj.tipo == "cliente":
+            mostrar_menu_cliente(usuario_obj, ventana)  # Pasa el objeto usuario
         else:
             print("Tipo de usuario desconocido.")
 

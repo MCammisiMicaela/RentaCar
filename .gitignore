@@ -1,2 +1,8 @@
 __pycache__/
 *.pyc
+
+# Datos locales de la aplicación
+datos/*.json
+
+# Configuración privada
+.env

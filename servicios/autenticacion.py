@@ -35,7 +35,6 @@ def validar_login(usuario, contraseña):
 
     return True, None, usuario_obj
 
-
 def validar_registro(datos, usuarios_existentes, modo="registro"):
     errores = []
     

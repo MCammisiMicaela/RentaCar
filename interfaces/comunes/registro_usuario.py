@@ -6,6 +6,7 @@ from servicios.autenticacion import validar_registro
 from servicios.gestion_usuarios import cargar_usuarios, guardar_usuarios
 from clases.cliente import Cliente
 from clases.administrador import Administrador
+from servicios.seguridad import crear_hash_contrasena
 
 def construir_formulario_usuario(ventana, y_inicial=150):
     """
@@ -85,6 +86,8 @@ def mostrar_registro_usuario(tipo_usuario="cliente", titulo="Registro de usuario
             return
         
         datos.pop("confirmar_contraseña")
+        # Convertimos la contraseña en un hash antes de guardar el usuario.
+        datos["contraseña"] = crear_hash_contrasena(datos["contraseña"])
         # Formatea la fecha si es necesario
         if hasattr(datos["fecha_nacimiento"], "strftime"):
             datos["fecha_nacimiento"] = datos["fecha_nacimiento"].strftime("%d/%m/%Y")

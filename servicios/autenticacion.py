@@ -3,6 +3,8 @@ Se gestionan las validaciones de login y registro de usuarios
 '''
 from datetime import datetime, date
 from servicios.gestion_usuarios import cargar_usuarios
+from servicios.seguridad import verificar_contrasena
+
 from servicios.validaciones import (
     es_letras, es_fecha_valida, es_celular_valido,
     es_usuario_valido, es_contraseña_valida, coinciden_contraseñas
@@ -18,19 +20,21 @@ def validar_login(usuario, contraseña):
 
     usuarios = cargar_usuarios()
     usuario_obj = next((u for u in usuarios if u.usuario == usuario), None)
-    if not usuario_obj:
-        return False, "El usuario ingresado no existe.", None
-
-    if usuario_obj.contraseña != contraseña:
-        return False, "La contraseña es incorrecta.", None
-
+   
+    # Comprobar el estado de la cuenta.
     if usuario_obj.bloqueado:
         return False, "La cuenta está bloqueada. Contacte al administrador.", None
 
+    # Verificar que el usuario tenga un rol válido.
     if usuario_obj.tipo not in ["admin", "cliente"]:
         return False, "El tipo de usuario no está definido.", None
 
+    # Verificar la contraseña usando su hash.
+    if not verificar_contrasena(contraseña, usuario_obj.contraseña):
+        return False, "La contraseña es incorrecta.", None
+
     return True, None, usuario_obj
+
 
 def validar_registro(datos, usuarios_existentes, modo="registro"):
     errores = []

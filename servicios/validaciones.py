@@ -3,6 +3,8 @@ Validaciones básicas por campo
 '''
 import re
 from datetime import datetime, date
+import hmac
+from servicios.seguridad import verificar_contrasena
 
 
 def es_letras(texto):
@@ -54,16 +56,25 @@ def es_contraseña_valida(contraseña):
 def coinciden_contraseñas(contraseña, confirmacion):
     return contraseña == confirmacion
 
-def validar_cambio_contraseña(actual, nueva, confirmacion, contraseña_guardada):
-    if not actual or not nueva or not confirmacion:
-        return False, "Todos los campos son obligatorios para cambiar la contraseña."
 
-    if actual != contraseña_guardada:
+
+def validar_cambio_contraseña(actual, nueva, confirmacion, contraseña_guardada):
+    # Comprobar que todos los campos estén completos.
+    if not actual or not nueva or not confirmacion:
+        return False, "Todos los campos son obligatorios."
+
+    # Comprobar la contraseña actual mediante su hash.
+    if not verificar_contrasena(actual, contraseña_guardada):
         return False, "La contraseña actual no es válida."
 
-    if len(nueva) < 4:
-        return False, "La nueva contraseña debe tener al menos 4 caracteres."
+    # Verificar los requisitos de la nueva contraseña.
+    if not es_contraseña_valida(nueva):
+        return False, (
+            "La nueva contraseña debe tener al menos "
+            "6 caracteres, incluir letras y números."
+        )
 
+    # Comprobar la confirmación.
     if nueva != confirmacion:
         return False, "La confirmación no coincide."
 

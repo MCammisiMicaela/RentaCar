@@ -5,6 +5,7 @@ from recursos.estilos import *
 from servicios.autenticacion import validar_registro
 from servicios.validaciones import validar_cambio_contraseña
 from servicios.gestion_usuarios import cargar_usuarios, guardar_usuarios
+from servicios.seguridad import crear_hash_contrasena
 
 def mostrar_mi_cuenta(usuario_actual, ventana):
     for widget in ventana.winfo_children():
@@ -130,7 +131,8 @@ def mostrar_mi_cuenta(usuario_actual, ventana):
             mensaje_contrasenia.config(text=mensaje, fg=COLOR_ERROR)
             return
 
-        usuario_actual.contraseña = nueva
+        # Guardar un hash, nunca la contraseña original.
+        usuario_actual.contraseña = crear_hash_contrasena(nueva)
         usuarios = cargar_usuarios()
         for i, u in enumerate(usuarios):
             if u.usuario == usuario_actual.usuario:

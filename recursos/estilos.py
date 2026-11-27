@@ -13,6 +13,7 @@ COLOR_BOTON = "#F2F2F2"
 COLOR_HOVER_BOTON_CLARO = "#D1DAC3"
 COLOR_ERROR = "#C0392B"
 COLOR_EXITO = "#4CAF50"
+COLOR_PUNTUACION = "#9E8600"
 
 # Rutas de imagen
 RUTA_FONDO = os.path.join("recursos", "fondo.png")
@@ -43,9 +44,45 @@ CONFIG_FECHA = {
     "insertbackground": COLOR_FONDO
 }
 
+CONFIG_ENTRY_FECHA = {
+    "width": 20,
+    "date_pattern": "dd/mm/yyyy",
+    "font": TIPO_LETRA,
+    "foreground": COLOR_FONDO,  # texto dentro del campo
+    "background": "white",      # fondo del campo (no del calendario)
+    "state": "readonly"         # evita edición manual si querés
+}
+
+# Calendario visual
+CONFIG_CALENDARIO = {
+    "selectmode": "day",
+    "date_pattern": "yyyy-mm-dd",
+    "showweeknumbers": False,
+    "background": COLOR_FONDO,
+    "foreground": COLOR_TEXTO,
+    "headersbackground": COLOR_FONDO,
+    "headersforeground": COLOR_TEXTO,
+    "selectbackground": "#66A6B6",  # color de selección
+    "selectforeground": COLOR_TEXTO_BOTON,
+    "bordercolor": COLOR_BOTON,
+    "normalbackground": COLOR_BOTON,
+    "normalforeground": COLOR_TEXTO_BOTON
+}
 
 # Etiquetas
 CONFIG_LABEL_FORMULARIO = {
+    "font": TIPO_LETRA,
+    "bg": COLOR_FONDO,
+    "fg": COLOR_TEXTO
+}
+
+CONFIG_LABEL_SECCION = {
+    "font": ("Segoe UI", 14, "bold"),
+    "bg": COLOR_FONDO,
+    "fg": COLOR_TEXTO
+}
+
+CONFIG_LABEL_FILTRO = {
     "font": TIPO_LETRA,
     "bg": COLOR_FONDO,
     "fg": COLOR_TEXTO
@@ -79,6 +116,24 @@ CONFIG_BOTON_FORMULARIO = {
     "borderwidth": 0
 }
 
+CONFIG_BOTON_MINI = {
+    "font": ("Segoe UI", 10),
+    "bg": COLOR_BOTON,
+    "fg": COLOR_TEXTO_BOTON,
+    "activebackground": COLOR_HOVER_BOTON_CLARO,
+    "width": 15,
+    "borderwidth": 0
+}
+
+CONFIG_BOTON_INFO = {
+    "font": ("Segoe UI", 10),
+    "bg": COLOR_FONDO,
+    "fg": COLOR_TEXTO,
+    "activebackground": "#0386A7",
+    "width": 15,
+    "borderwidth": 0
+}
+
 CONFIG_BOTON = {
     "font": TIPO_LETRA,
     "bg": COLOR_BOTON,
@@ -88,4 +143,3 @@ CONFIG_BOTON = {
     "height": 2,
     "borderwidth": 0
 }
-

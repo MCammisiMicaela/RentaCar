@@ -6,3 +6,4 @@ datos/*.json
 
 # Configuración privada
 .env
+.pytest_cache/

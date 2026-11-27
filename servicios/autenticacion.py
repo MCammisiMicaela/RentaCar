@@ -20,7 +20,9 @@ def validar_login(usuario, contraseña):
 
     usuarios = cargar_usuarios()
     usuario_obj = next((u for u in usuarios if u.usuario == usuario), None)
-   
+    if usuario_obj is None:
+        return False, "El usuario ingresado no existe.", None
+
     # Comprobar el estado de la cuenta.
     if usuario_obj.bloqueado:
         return False, "La cuenta está bloqueada. Contacte al administrador.", None
@@ -37,7 +39,7 @@ def validar_login(usuario, contraseña):
 
 def validar_registro(datos, usuarios_existentes, modo="registro"):
     errores = []
-    
+
     campos_obligatorios = ["nombre", "apellido", "fecha_nacimiento", "celular", "usuario"]
     if modo == "registro":
         campos_obligatorios += ["contraseña", "confirmar_contraseña"]
@@ -76,7 +78,7 @@ def validar_registro(datos, usuarios_existentes, modo="registro"):
         errores.append("El nombre de usuario no debe contener espacios ni símbolos.")
     elif estado_usuario == "repetido":
         errores.append("El nombre de usuario ya está registrado.")
-    
+
     if modo == "registro":
         if not es_contraseña_valida(datos["contraseña"]):
             errores.append("La contraseña debe tener al menos 6 caracteres, incluir letras y números.")

@@ -16,7 +16,8 @@ class Usuario:
         self.celular = celular
 
     def cambiar_contraseña(self, nueva_contraseña):
-        self.contraseña = nueva_contraseña
+        from servicios.seguridad import crear_hash_contrasena
+        self.contraseña = crear_hash_contrasena(nueva_contraseña)
 
     def to_dict(self):
         return {
